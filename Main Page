@@ -1,0 +1,157 @@
+package student_mangement;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc=new Scanner(System.in);
+		while(true) {
+			System.out.println("1.Create Account\n2.Login\n3.Exit");
+			int c=sc.nextInt();
+			switch(c){
+			//case 1
+			case 1:while(true) {
+				System.out.println("1.Create DataBase\n2.Go back");
+				int a=sc.nextInt();
+				switch(a) {
+				case 1:try {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+					Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/student_management?user=root&&password=12345678");
+					//Statement st=con.createStatement();
+					//st.execute("create table student(id int primary key,name varchar(30),address varchar(50),mobile long,email varchar(40) unique,password varchar(20) not null)");
+					PreparedStatement ps=con.prepareStatement("insert into student values(?,?,?,?,?,?)");
+					System.out.println("enter id");
+					int id=sc.nextInt();
+					ps.setInt(1,id);
+					System.out.println("enter name");
+					String name=sc.next();
+					ps.setString(2, name);
+					System.out.println("enter address");
+					String add=sc.next();
+					ps.setString(3, add);
+					System.out.println("enter mobile");
+					long mobile=sc.nextLong();
+					ps.setLong(4, mobile);
+					System.out.println("enter email");
+					String email=sc.next();
+					ps.setString(5, email);
+					System.out.println("enter password");
+					String pass=sc.next();
+					ps.setString(6,pass);
+					ps.executeUpdate();
+					System.out.println("record inserted");
+				}
+				catch(ClassNotFoundException | SQLException e) {
+					e.printStackTrace();
+				}break;
+				default:System.out.println("enter valid input");
+				}
+				
+			}
+			//case 2 login
+			case 2:while(true) {
+				System.out.println("1.using email & password\n2.using mobile & otp");
+				int a=sc.nextInt();
+				switch(a) {
+				case 1:try {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+					Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/student_management?user=root&&password=12345678");
+					PreparedStatement ps=con.prepareStatement("select * from student where email=? and password=?");
+					System.out.println("enter email");
+					String email=sc.next();
+					ps.setString(1, email);
+					System.out.println("enter password");
+					String password=sc.next();
+					ps.setString(2, password);
+					ResultSet rs=ps.executeQuery();
+					rs.next();
+					//System.out.println(rs.getString(5)+" "+rs.getString(6));
+					if(rs.getString(5).equals(email) && rs.getString(6).equals(password)) {
+						System.out.println("login successfull");
+						while(true) {
+							System.out.println("1.View Details\n2.Edit\n3.Delte\n4.Exit");
+							int b=sc.nextInt();
+							switch(b) {
+							case 1:System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+" "+rs.getString(3)+" "+rs.getLong(4)+" "+rs.getString(5)+" "+rs.getString(6));break;
+							case 2:ps=con.prepareStatement("update student set name=? where email=?");
+							System.out.println("enter name");
+							String name=sc.next();
+							ps.setString(1,name );
+							
+							System.out.println("enter email");
+							String emailid=sc.next();
+							ps.setString(2,emailid);
+							ps.executeUpdate();
+							System.out.println("updated successfully..");
+							}
+							
+						}
+					}
+					else {
+						System.out.println("invalid credentials");
+					}
+					
+				} catch (ClassNotFoundException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}break;
+				case 2:try {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+					Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/student_management?user=root&&password=12345678");
+					PreparedStatement ps=con.prepareStatement("select * from student where mobile=?");
+					System.out.println("enter mobile");
+					long mobile=sc.nextLong();
+					ps.setLong(1, mobile);
+					System.out.println("enter otp");
+					int otp=sc.nextInt();
+					ResultSet rs=ps.executeQuery();
+					rs.next();
+					//System.out.println(rs.getString(5)+" "+rs.getString(6));
+					if(rs.getLong(4)==mobile && otp==1234) {
+						System.out.println("login successfull");
+						while(true) {
+							System.out.println("1.View Details\n2.Edit\n3.Delte\n4.Exit");
+							int b=sc.nextInt();
+							switch(b) {
+							case 1:System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+" "+rs.getString(3)+" "+rs.getLong(4)+" "+rs.getString(5)+" "+rs.getString(6));break;
+							case 2:ps=con.prepareStatement("update student set name=? where email=?");
+							System.out.println("enter name");
+							String name=sc.next();
+							ps.setString(1,name );
+							
+							System.out.println("enter email");
+							String emailid=sc.next();
+							ps.setString(2,emailid);
+							ps.executeUpdate();
+							System.out.println("updated successfully..");
+							}
+							
+						}
+					}
+					else {
+						System.out.println("invalid credentials");
+					}
+					
+				} catch (ClassNotFoundException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}break;
+					
+				}
+				
+				
+				}
+				
+			}
+		}
+
+	}
+
+}
